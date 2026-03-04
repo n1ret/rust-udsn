@@ -6,17 +6,20 @@ A quick little DSN parser that can give you a nice looking URI connection string
 use udsn::{DSN, Resource};
 
 let dsn = DSN::new()
-    .protocol("postgres".to_string()),     // protocol
-    .username(Some("username")),                       // username
-    None,                       // password
-    Resource::URI("localhost"), // uri or localpath
-    Some(5432),                 // port
-    Some("db_name"),            // dbname
-    Some(vec![                  // params
-        ("sslmode",         Some("verify")),
-        ("connect_timeout", Some("10"))
-    ]),
-);
+    .protocol("postgres"),       // protocol
+    .username(Some("username")), // username
+    .password(None),             // password
+    .resource(Resource::URI("localhost".to_string())), // uri or localpath
+    .host("localhost")           // convenience shortcut for .resource(Resource::URI...
+    .path("/tmp/db.sqlite")      // convenience shortcut for .resourde(Resource::Path...
+    .port(Some(5432)),           // port
+    .database(Some("db_name")),  // dbname
+    .params(                     // params
+        Some(vec![
+            ("sslmode",         Some("verify")),
+            ("connect_timeout", Some("10"))
+        ])
+    );
 
 dsn.to_string() == "postgresql://localhost/db?sslmode=verify-full&connect_timeout=10";
 
